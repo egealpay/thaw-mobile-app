@@ -8,10 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-ThawApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ThawApp.a */; };
+		0F87E7C51C924BC4AAD5A467 /* Outfit-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24DA86123ABC4823B9F5E2D5 /* Outfit-SemiBold.ttf */; };
+		117CD5C3AE8F4B1186302EBC /* SpaceGrotesk-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66C5CAC108EC4D5A800BDC9D /* SpaceGrotesk-Bold.ttf */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1EC73F6E11EC414BB8811B55 /* Outfit-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D77E035073A449294DC08F5 /* Outfit-Light.ttf */; };
+		1F3C7AB09A33414F880780DF /* SpaceGrotesk-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A596DA18ACD4EB6AD9C70E2 /* SpaceGrotesk-SemiBold.ttf */; };
+		31FCF1577A98477E87B84CB7 /* Outfit-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 515BF214A41149DDB8E0C1AF /* Outfit-Medium.ttf */; };
+		4C353923C47349B1A7D8733F /* SpaceGrotesk-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2FA6E0A919245C9A38C87E7 /* SpaceGrotesk-Light.ttf */; };
+		5D1E35D8065E431FA7491E56 /* Outfit-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38D1DB29CAD24038B6EB56F6 /* Outfit-Bold.ttf */; };
 		63DB376E702ECF814E2CD519 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		9265493DB992456C925BBD79 /* SpaceGrotesk-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5AA8DC04461A4999B6C1C3A5 /* SpaceGrotesk-Regular.ttf */; };
+		B301A419CDB44F3D9BFEAFF0 /* SpaceGrotesk-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8B038E096E54C8CAB398DC5 /* SpaceGrotesk-Medium.ttf */; };
+		E7BF87BEDE08459B9A642980 /* Outfit-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B412913431CC4B2DBDE7B4C3 /* Outfit-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,12 +29,22 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ThawApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ThawApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = ThawApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		24DA86123ABC4823B9F5E2D5 /* Outfit-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-SemiBold.ttf"; path = "../assets/fonts/Outfit-SemiBold.ttf"; sourceTree = "<group>"; };
+		2D77E035073A449294DC08F5 /* Outfit-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Light.ttf"; path = "../assets/fonts/Outfit-Light.ttf"; sourceTree = "<group>"; };
+		38D1DB29CAD24038B6EB56F6 /* Outfit-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Bold.ttf"; path = "../assets/fonts/Outfit-Bold.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-ThawApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThawApp.debug.xcconfig"; path = "Target Support Files/Pods-ThawApp/Pods-ThawApp.debug.xcconfig"; sourceTree = "<group>"; };
+		515BF214A41149DDB8E0C1AF /* Outfit-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Medium.ttf"; path = "../assets/fonts/Outfit-Medium.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ThawApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThawApp.release.xcconfig"; path = "Target Support Files/Pods-ThawApp/Pods-ThawApp.release.xcconfig"; sourceTree = "<group>"; };
+		5AA8DC04461A4999B6C1C3A5 /* SpaceGrotesk-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpaceGrotesk-Regular.ttf"; path = "../assets/fonts/SpaceGrotesk-Regular.ttf"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ThawApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ThawApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		66C5CAC108EC4D5A800BDC9D /* SpaceGrotesk-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpaceGrotesk-Bold.ttf"; path = "../assets/fonts/SpaceGrotesk-Bold.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ThawApp/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ThawApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8A596DA18ACD4EB6AD9C70E2 /* SpaceGrotesk-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpaceGrotesk-SemiBold.ttf"; path = "../assets/fonts/SpaceGrotesk-SemiBold.ttf"; sourceTree = "<group>"; };
+		B412913431CC4B2DBDE7B4C3 /* Outfit-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Regular.ttf"; path = "../assets/fonts/Outfit-Regular.ttf"; sourceTree = "<group>"; };
+		D2FA6E0A919245C9A38C87E7 /* SpaceGrotesk-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpaceGrotesk-Light.ttf"; path = "../assets/fonts/SpaceGrotesk-Light.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F8B038E096E54C8CAB398DC5 /* SpaceGrotesk-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpaceGrotesk-Medium.ttf"; path = "../assets/fonts/SpaceGrotesk-Medium.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +80,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		591E4B108D7A43EDADFB0414 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D2FA6E0A919245C9A38C87E7 /* SpaceGrotesk-Light.ttf */,
+				38D1DB29CAD24038B6EB56F6 /* Outfit-Bold.ttf */,
+				B412913431CC4B2DBDE7B4C3 /* Outfit-Regular.ttf */,
+				24DA86123ABC4823B9F5E2D5 /* Outfit-SemiBold.ttf */,
+				5AA8DC04461A4999B6C1C3A5 /* SpaceGrotesk-Regular.ttf */,
+				8A596DA18ACD4EB6AD9C70E2 /* SpaceGrotesk-SemiBold.ttf */,
+				515BF214A41149DDB8E0C1AF /* Outfit-Medium.ttf */,
+				2D77E035073A449294DC08F5 /* Outfit-Light.ttf */,
+				F8B038E096E54C8CAB398DC5 /* SpaceGrotesk-Medium.ttf */,
+				66C5CAC108EC4D5A800BDC9D /* SpaceGrotesk-Bold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +112,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				591E4B108D7A43EDADFB0414 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -161,6 +199,16 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				63DB376E702ECF814E2CD519 /* PrivacyInfo.xcprivacy in Resources */,
+				4C353923C47349B1A7D8733F /* SpaceGrotesk-Light.ttf in Resources */,
+				5D1E35D8065E431FA7491E56 /* Outfit-Bold.ttf in Resources */,
+				E7BF87BEDE08459B9A642980 /* Outfit-Regular.ttf in Resources */,
+				0F87E7C51C924BC4AAD5A467 /* Outfit-SemiBold.ttf in Resources */,
+				9265493DB992456C925BBD79 /* SpaceGrotesk-Regular.ttf in Resources */,
+				1F3C7AB09A33414F880780DF /* SpaceGrotesk-SemiBold.ttf in Resources */,
+				31FCF1577A98477E87B84CB7 /* Outfit-Medium.ttf in Resources */,
+				1EC73F6E11EC414BB8811B55 /* Outfit-Light.ttf in Resources */,
+				B301A419CDB44F3D9BFEAFF0 /* SpaceGrotesk-Medium.ttf in Resources */,
+				117CD5C3AE8F4B1186302EBC /* SpaceGrotesk-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,9 +239,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ThawApp/Pods-ThawApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ThawApp/Pods-ThawApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -230,9 +282,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ThawApp/Pods-ThawApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ThawApp/Pods-ThawApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -260,8 +316,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V48Z4QU5Q4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ThawApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Thaw;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -274,6 +332,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.egealpay.ThawMobileApp;
 				PRODUCT_NAME = ThawApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -290,7 +349,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V48Z4QU5Q4;
 				INFOPLIST_FILE = ThawApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Thaw;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -303,6 +364,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.egealpay.ThawMobileApp;
 				PRODUCT_NAME = ThawApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>ThawApp</string>
+	<string>Thaw</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -37,6 +37,19 @@
 	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SpaceGrotesk-Light.ttf</string>
+		<string>Outfit-Bold.ttf</string>
+		<string>Outfit-Regular.ttf</string>
+		<string>Outfit-SemiBold.ttf</string>
+		<string>SpaceGrotesk-Regular.ttf</string>
+		<string>SpaceGrotesk-SemiBold.ttf</string>
+		<string>Outfit-Medium.ttf</string>
+		<string>Outfit-Light.ttf</string>
+		<string>SpaceGrotesk-Medium.ttf</string>
+		<string>SpaceGrotesk-Bold.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

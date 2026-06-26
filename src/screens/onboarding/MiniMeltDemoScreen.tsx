@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IceCube, PrimaryButton, ScreenBackground, SecondaryButton } from '../../components';
 import { Colors, Spacing, TextStyles } from '../../constants';
@@ -33,8 +34,8 @@ export function MiniMeltDemoScreen({ navigation }: Props) {
 
   return (
     <ScreenBackground variant="light">
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.container}>
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <View style={styles.content}>
           <Text style={styles.eyebrow}>LIVE DEMO</Text>
 
           <View style={styles.cubeArea}>
@@ -61,11 +62,11 @@ export function MiniMeltDemoScreen({ navigation }: Props) {
               That's the whole idea. Stay with it, and your block thaws on its own.
             </Text>
           </View>
+        </View>
 
-          <View style={styles.actions}>
-            <PrimaryButton label="I'm in →" onPress={goNext} />
-            <SecondaryButton label="Skip the intro" onPress={goNext} />
-          </View>
+        <View style={styles.actions}>
+          <PrimaryButton label="I'm in →" onPress={goNext} />
+          <SecondaryButton label="Skip the intro" onPress={goNext} />
         </View>
       </SafeAreaView>
     </ScreenBackground>
@@ -74,11 +75,10 @@ export function MiniMeltDemoScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  container: {
+  content: {
     flex: 1,
     paddingHorizontal: Spacing.screenH,
     paddingTop: 16,
-    paddingBottom: 32,
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
@@ -114,5 +114,9 @@ const styles = StyleSheet.create({
   textBlock: { alignItems: 'center', gap: 10 },
   h2: { ...TextStyles.h2, textAlign: 'center' },
   body: { ...TextStyles.body, textAlign: 'center' },
-  actions: { width: '100%', gap: 8 },
+  actions: {
+    paddingHorizontal: Spacing.screenH,
+    paddingBottom: 8,
+    gap: 8,
+  },
 });

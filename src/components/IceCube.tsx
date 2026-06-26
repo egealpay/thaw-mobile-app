@@ -71,18 +71,18 @@ export function IceCube({ progress, state, iceProfile, size = 150 }: Props) {
   const cy = size / 2;
   const side = size * 0.72;
 
-  // The cube shrinks in height to zero as it fully melts.
-  // We use an ease-in curve so the early melt is subtle and the final
-  // collapse into the puddle is fast and satisfying.
-  const meltProgress = progress * progress; // ease-in: slow start, fast finish
-  const meltH = side * Math.max(0, 1 - meltProgress);
+  // Ease-in curve: early melt is subtle, final collapse is fast.
+  const meltProgress = progress * progress;
+  const meltScale = Math.max(0, 1 - meltProgress);
 
-  // As the cube gets shorter it spreads slightly wider (physical spreading).
-  const meltW = side * (1 + meltProgress * 0.1);
+  // Both dimensions shrink at the same rate so the diamond contracts
+  // uniformly from all four sides rather than only collapsing vertically.
+  const meltH = side * meltScale;
+  const meltW = side * meltScale;
 
-  // Corner radius grows as corners soften. Clamped to meltH/2 so the rect
-  // never has rx > height/2 which would be an invalid SVG shape.
-  const cornerR = Math.min(meltH / 2, side * (0.18 + meltProgress * 0.35));
+  // Corner radius grows as the edges soften, clamped so rx never exceeds half
+  // the current dimension (invalid SVG if exceeded).
+  const cornerR = Math.min(meltH / 2, side * (0.12 + meltProgress * 0.40));
 
   // Rect upper-left corner (centred in viewBox)
   const rectX = cx - meltW / 2;

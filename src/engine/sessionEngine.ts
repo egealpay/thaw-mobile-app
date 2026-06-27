@@ -7,6 +7,7 @@ import {
   meltReducer,
 } from './meltReducer';
 import { insertSession } from '../storage/db';
+import { LiveActivity } from '../native/LiveActivity';
 
 function generateId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -16,6 +17,7 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
   const duration = targetSeconds ?? (profile?.defaultSessionLength ?? 1500);
   const iceProfile = profile?.iceProfileDefault ?? 'glacier';
   const strictness = profile?.strictness ?? 'gentle';
+  const subject = profile?.deadline?.label ?? 'Free session';
 
   const [meltState, setMeltState] = useState<MeltState>(() =>
     createInitialMeltState(generateId(), duration, iceProfile),
@@ -35,16 +37,36 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
     });
   }, []);
 
+  // Live Activity: start when melting begins, end on complete/abandon
+  useEffect(() => {
+    if (meltState.state === 'melting' && meltState.elapsedFocused < 2) {
+      const remaining = Math.max(0, meltState.targetDuration - meltState.elapsedFocused);
+      LiveActivity.start(subject, meltState.targetDuration, remaining, meltState.meltProgress);
+    }
+    if (meltState.state === 'complete' || meltState.state === 'idle') {
+      LiveActivity.end();
+    }
+  }, [meltState.state]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Tick loop while melting
   useEffect(() => {
     if (meltState.state === 'melting') {
       tickIntervalRef.current = setInterval(() => {
         dispatch({ type: 'TICK', now: Date.now() });
+        // Update Live Activity on every tick
+        const s = stateRef.current;
+        const remaining = Math.max(0, s.targetDuration - s.elapsedFocused);
+        LiveActivity.update(remaining, s.meltProgress, false);
       }, 1000);
     } else {
       if (tickIntervalRef.current) {
         clearInterval(tickIntervalRef.current);
         tickIntervalRef.current = null;
+      }
+      // Update paused state
+      if (meltState.state === 'paused' || meltState.state === 'refreezing') {
+        const remaining = Math.max(0, meltState.targetDuration - meltState.elapsedFocused);
+        LiveActivity.update(remaining, meltState.meltProgress, true);
       }
     }
     return () => {
@@ -126,6 +148,7 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
       insertSession(record);
     }
     dispatch({ type: 'ABANDON', now: Date.now() });
+    LiveActivity.end();
   }, [dispatch, strictness]);
 
   const reset = useCallback(

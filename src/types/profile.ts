@@ -34,6 +34,7 @@ export interface FocusProfile {
   studyWindow: StudyWindow;
   dailyGoal: DailyGoal;
   weeklyTargetDays: number;
+  studyDays?: boolean[]; // which days are selected (Mon=0 … Sun=6)
   deadline?: Deadline;
   derivedBy: DerivedBy;
 }

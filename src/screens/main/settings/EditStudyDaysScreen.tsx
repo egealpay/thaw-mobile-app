@@ -9,21 +9,18 @@ import { EditNavBar } from './EditNavBar';
 
 type Props = NativeStackScreenProps<SettingsEditParamList, 'EditStudyDays'>;
 
-function daysToSelection(n: number): boolean[] {
-  // Fill weekdays first (Mon-Fri = indices 0-4), then Sat (5), then Sun (6)
-  return [0, 1, 2, 3, 4, 5, 6].map(i => i < n);
-}
+const DEFAULT_DAYS = [true, true, true, true, true, false, false]; // Mon–Fri
 
 export function EditStudyDaysScreen({ navigation }: Props) {
   const profile = getProfile()!;
-  const [selected, setSelected] = useState(
-    daysToSelection(profile.weeklyTargetDays ?? 5),
+  const [selected, setSelected] = useState<boolean[]>(
+    profile.studyDays ?? DEFAULT_DAYS,
   );
 
   const count = selected.filter(Boolean).length;
 
   const handleSave = () => {
-    saveProfile({ ...profile, weeklyTargetDays: count });
+    saveProfile({ ...profile, weeklyTargetDays: count, studyDays: selected });
     navigation.goBack();
   };
 

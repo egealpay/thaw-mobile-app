@@ -75,6 +75,21 @@ export function DataRemindersScreen() {
     await Share.share({ message: json, title: 'Thaw data export' });
   };
 
+  const handleResetProgress = () => {
+    Alert.alert(
+      'Reset progress?',
+      'Your session history and streak will be cleared. Your profile and settings stay intact.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => deleteAllSessions(),
+        },
+      ],
+    );
+  };
+
   const handleDeleteAll = () => {
     Alert.alert(
       'Delete all data?',
@@ -132,6 +147,12 @@ export function DataRemindersScreen() {
           </Section>
 
           <Section title="">
+            <Row
+              label="Reset progress"
+              onPress={handleResetProgress}
+              destructive
+            />
+            <View style={styles.divider} />
             <Row
               label="Delete all data"
               onPress={handleDeleteAll}

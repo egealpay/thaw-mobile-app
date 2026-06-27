@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IceCube, Puddle, ScreenBackground } from '../../components';
 import { Colors, Spacing, TextStyles } from '../../constants';
@@ -33,9 +33,13 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     const parent = navigation.getParent();
     if (parent?.canGoBack()) {
       parent.goBack();
+    } else {
+      // First-session path: Onboarding was replaced by MainApp while the Session
+      // modal was open. Reset the root stack to MainApp so the user lands there.
+      parent?.dispatch(
+        CommonActions.reset({ index: 0, routes: [{ name: 'MainApp' }] }),
+      );
     }
-    // If canGoBack is false, AppNavigator already reset the stack (first-session
-    // transition from Onboarding → MainApp) and the modal is closing on its own.
   }, [navigation]);
 
   // Resume when returning from PausedScreen via "Resume"; end when returning via "End session"

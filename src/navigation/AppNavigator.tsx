@@ -10,24 +10,17 @@ import type { RootStackParamList } from './types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function AppNavigator() {
-  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  // MMKV is synchronous — read profile on first render, no null state needed
+  const [hasProfile, setHasProfile] = useState(() => getProfile() !== null);
 
-  useEffect(() => {
-    const profile = getProfile();
-    setHasProfile(profile !== null);
-  }, []);
-
-  // Re-check whenever the navigator refocuses
-  // (profile is written synchronously in FirstSessionScreen)
+  // Poll in both directions: onboarding → main (profile saved) and main → onboarding (profile cleared)
   useEffect(() => {
     const interval = setInterval(() => {
-      const profile = getProfile();
-      if (profile && !hasProfile) setHasProfile(true);
+      const exists = getProfile() !== null;
+      if (exists !== hasProfile) setHasProfile(exists);
     }, 500);
     return () => clearInterval(interval);
   }, [hasProfile]);
-
-  if (hasProfile === null) return null;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

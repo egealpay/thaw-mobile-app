@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FrostedCard, PrimaryButton, ProgressHeader, ScreenBackground } from '../../../components';
 import { Colors, Spacing, TextStyles } from '../../../constants';
@@ -66,9 +66,9 @@ export function FocusProfileRevealScreen({ navigation }: Props) {
 
   return (
     <ScreenBackground variant="reveal">
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ProgressHeader progress={0.82} onBack={() => navigation.goBack()} />
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           <Text style={styles.eyebrow}>YOUR FOCUS PROFILE</Text>
           <Text style={styles.h2}>Here's what we set up.</Text>
           <Text style={styles.body}>
@@ -92,12 +92,12 @@ export function FocusProfileRevealScreen({ navigation }: Props) {
               </FrostedCard>
             ))}
           </View>
-
-          <View style={styles.actions}>
-            <PrimaryButton label="Looks right →" onPress={handleContinue} />
-            <Text style={styles.hint}>You can edit all of this in Settings</Text>
-          </View>
         </ScrollView>
+
+        <View style={styles.actions}>
+          <PrimaryButton label="Looks right →" onPress={handleContinue} />
+          <Text style={styles.hint}>You can edit all of this in Settings</Text>
+        </View>
       </SafeAreaView>
     </ScreenBackground>
   );
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   container: {
     paddingHorizontal: Spacing.screenH,
-    paddingBottom: 32,
+    paddingBottom: 16,
     gap: 16,
   },
   eyebrow: { ...TextStyles.eyebrow },
@@ -142,7 +142,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.primary,
   },
-  actions: { gap: 10 },
+  actions: {
+    gap: 10,
+    paddingHorizontal: Spacing.screenH,
+    paddingBottom: 8,
+    paddingTop: 12,
+  },
   hint: {
     fontFamily: 'Outfit-Regular',
     fontSize: 13,

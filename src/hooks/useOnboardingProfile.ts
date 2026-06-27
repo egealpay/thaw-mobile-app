@@ -45,6 +45,7 @@ export function useOnboardingProfile() {
       studyWindow: draft.studyWindow ?? { startTime: '19:30' },
       dailyGoal: draft.dailyGoal ?? { type: 'minutes', value: dailyGoalValue },
       weeklyTargetDays: draft.weeklyTargetDays ?? 5,
+      studyDays: draft.studyDays,
       deadline: draft.deadline,
       derivedBy: draft.derivedBy ?? {},
     };

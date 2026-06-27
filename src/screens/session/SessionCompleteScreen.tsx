@@ -1,4 +1,5 @@
 import React from 'react';
+import { CommonActions } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IceCube, PrimaryButton, ScreenBackground, SecondaryButton } from '../../components';
@@ -60,6 +61,10 @@ export function SessionCompleteScreen({ route, navigation }: Props) {
                 const parent = navigation.getParent();
                 if (parent?.canGoBack()) {
                   parent.goBack();
+                } else {
+                  parent?.dispatch(
+                    CommonActions.reset({ index: 0, routes: [{ name: 'MainApp' }] }),
+                  );
                 }
               }}
             />

@@ -15,7 +15,7 @@ export function DaysPerWeekScreen({ navigation }: Props) {
   const count = selected.filter(Boolean).length;
 
   const handleContinue = () => {
-    update({ weeklyTargetDays: count });
+    update({ weeklyTargetDays: count, studyDays: selected });
     setDerivedBy('weeklyTargetDays', `${count} days a week — you chose this`);
     navigation.navigate('FocusSpan');
   };

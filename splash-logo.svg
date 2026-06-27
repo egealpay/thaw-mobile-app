@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <linearGradient id="ice" x1="0.3" y1="0" x2="0.7" y2="1">
+      <stop offset="0"   stop-color="#e4f4ff"/>
+      <stop offset="0.5" stop-color="#b8dbf2"/>
+      <stop offset="1"   stop-color="#5aaee0"/>
+    </linearGradient>
+  </defs>
+  <!-- Rotated rounded-square diamond centred at 150,150 -->
+  <rect
+    x="60" y="60"
+    width="180" height="180"
+    rx="32"
+    fill="url(#ice)"
+    transform="rotate(45 150 150)"
+  />
+  <!-- Inner frosted highlight layer -->
+  <rect
+    x="82" y="82"
+    width="136" height="136"
+    rx="24"
+    fill="rgba(255,255,255,0.28)"
+    transform="rotate(45 150 150)"
+  />
+  <!-- Specular highlight blob -->
+  <ellipse cx="127" cy="118" rx="34" ry="22" fill="rgba(255,255,255,0.60)" transform="rotate(-30 127 118)"/>
+</svg>

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { OptionCard, PrimaryButton, ProgressHeader, ScreenBackground } from '../../../components';
 import { TextStyles } from '../../../constants';
@@ -30,7 +31,7 @@ export function FocusSpanScreen({ navigation }: Props) {
 
   return (
     <ScreenBackground variant="light">
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ProgressHeader progress={progress} onBack={() => navigation.goBack()} />
         <View style={styles.container}>
           <View style={styles.textBlock}>
@@ -53,8 +54,9 @@ export function FocusSpanScreen({ navigation }: Props) {
               />
             ))}
           </View>
+        </View>
 
-          <View style={styles.spacer} />
+        <View style={styles.cta}>
           <PrimaryButton label="Continue" onPress={handleContinue} />
         </View>
       </SafeAreaView>
@@ -68,12 +70,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 28,
     paddingTop: 24,
-    paddingBottom: 32,
     gap: 20,
   },
   textBlock: { gap: 10 },
   h2: { ...TextStyles.h2 },
   body: { ...TextStyles.body },
   options: { gap: 8 },
-  spacer: { flex: 1 },
+  cta: {
+    paddingHorizontal: 28,
+    paddingBottom: 8,
+  },
 });

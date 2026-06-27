@@ -15,7 +15,7 @@ export function HabitDaysScreen({ navigation }: Props) {
   const count = selected.filter(Boolean).length;
 
   const handleContinue = () => {
-    update({ weeklyTargetDays: count });
+    update({ weeklyTargetDays: count, studyDays: selected });
     setDerivedBy('weeklyTargetDays', 'days/week you chose (B2)');
     navigation.navigate('FocusSpan');
   };

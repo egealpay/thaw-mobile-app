@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -12,7 +13,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ScreenBackground, Toggle } from '../../../components';
 import { Colors, Spacing, TextStyles } from '../../../constants';
-import { getProfile, saveProfile } from '../../../storage/mmkv';
+import { clearAll, getProfile, saveProfile } from '../../../storage/mmkv';
+import { deleteAllSessions } from '../../../storage/db';
 import { daysUntil } from '../../../utils/formatters';
 import type { RootStackParamList } from '../../../navigation/types';
 
@@ -124,6 +126,24 @@ export function SettingsProfileScreen() {
 
   if (!profile) return null;
 
+  const handleResetProgress = () => {
+    Alert.alert(
+      'Reset progress?',
+      'Your session history and streak will be cleared. Your profile and settings stay intact.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => {
+            deleteAllSessions();
+            clearAll(); // clears profile → AppNavigator detects and shows onboarding
+          },
+        },
+      ],
+    );
+  };
+
   const handleStrictnessToggle = (val: boolean) => {
     const next = val ? 'strict' : 'gentle';
     setStrictness(next);
@@ -202,6 +222,12 @@ export function SettingsProfileScreen() {
               onPress={() => navigation.navigate('SettingsEdit', { screen: 'EditStudyDays' })}
             />
           </Section>
+
+          <View style={styles.sectionCard}>
+            <TouchableOpacity style={styles.row} onPress={handleResetProgress} activeOpacity={0.7}>
+              <Text style={styles.resetLabel}>Reset progress</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </SafeAreaView>
     </ScreenBackground>
@@ -265,6 +291,12 @@ const styles = StyleSheet.create({
   },
   rowValueBlue: {
     color: Colors.primary,
+  },
+
+  resetLabel: {
+    fontFamily: 'Outfit-Regular',
+    fontSize: 16,
+    color: Colors.destructive,
   },
 
   // Toggle row

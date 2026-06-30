@@ -42,6 +42,7 @@ export function StudyTimeScreen({ navigation }: Props) {
               value={time}
               mode="time"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              themeVariant="light"
               onChange={(_, date) => date && setTime(date)}
               style={styles.picker}
             />

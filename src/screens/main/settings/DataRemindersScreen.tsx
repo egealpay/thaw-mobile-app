@@ -18,6 +18,7 @@ import { getAllSessions, deleteAllSessions } from '../../../storage/db';
 import { clearAll, getProfile, getSettings, saveSettings } from '../../../storage/mmkv';
 import { formatTime24to12 } from '../../../utils/formatters';
 import { disableReminders, enableReminders, syncReminders } from '../../../notifications/reminders';
+import { version as appVersion } from '../../../../package.json';
 
 function Row({
   label,
@@ -193,8 +194,6 @@ export function DataRemindersScreen() {
 
           <Section title="YOUR DATA">
             <Row label="Export my data" onPress={handleExport} value="" />
-            <View style={styles.divider} />
-            <Row label="Device backup" value="iCloud · on" />
           </Section>
 
           <Section title="">
@@ -205,7 +204,7 @@ export function DataRemindersScreen() {
             />
           </Section>
 
-          <Text style={styles.footer}>Thaw v0.2 · everything stays on your device</Text>
+          <Text style={styles.footer}>Thaw v{appVersion} · everything stays on your device</Text>
         </ScrollView>
       </SafeAreaView>
     </ScreenBackground>

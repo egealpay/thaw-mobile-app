@@ -5,6 +5,7 @@ import { IceCube, PrimaryButton, ScreenBackground, SecondaryButton } from '../..
 import { Colors, Spacing, TextStyles } from '../../../constants';
 import { daysUntil, formatMinutes } from '../../../utils/formatters';
 import { saveProfile } from '../../../storage/mmkv';
+import { syncReminders } from '../../../notifications/reminders';
 import type { OnboardingStackParamList } from '../../../navigation/types';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'FirstSession'>;
@@ -26,6 +27,7 @@ export function FirstSessionScreen({ route, navigation }: Props) {
 
   const handleStart = () => {
     saveProfile(profile);
+    syncReminders();
     // Navigate to session — will be handled by AppNavigator after profile is saved
     navigation.getParent()?.navigate('Session', {
       profile,

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CommonActions } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IceCube, PrimaryButton, ScreenBackground, SecondaryButton } from '../../components';
 import { Colors, Spacing, TextStyles } from '../../constants';
+import { getAllSessions } from '../../storage/db';
+import { computeDailyProgress, computeStreak } from '../../engine/streak';
+import { syncReminders } from '../../notifications/reminders';
 import type { SessionStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<SessionStackParamList, 'SessionComplete'>;
@@ -18,7 +21,30 @@ function StatTile({ value, label }: { value: string; label: string }) {
 }
 
 export function SessionCompleteScreen({ route, navigation }: Props) {
-  const { focusedMinutes, streak, todayMinutes } = route.params;
+  const { focusedMinutes, profile, targetSeconds, iceProfile } = route.params;
+
+  // The finished session is already in the DB (inserted synchronously on 'complete').
+  const [{ streak, todayMinutes }] = useState(() => {
+    const sessions = getAllSessions();
+    const goal = profile?.dailyGoal?.value ?? 25;
+    return {
+      streak: computeStreak(sessions, goal).current,
+      todayMinutes: computeDailyProgress(sessions, goal).minutesDone,
+    };
+  });
+
+  // Goal may be met now: skip today's reminder.
+  useEffect(() => {
+    syncReminders();
+  }, []);
+
+  const startAnotherBlock = () => {
+    // Fresh session screen with the same settings (not the finished one still on the stack).
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'ActiveSession', params: { profile, targetSeconds } }],
+    });
+  };
 
   return (
     <ScreenBackground variant="light">
@@ -30,7 +56,7 @@ export function SessionCompleteScreen({ route, navigation }: Props) {
             <IceCube
               progress={1}
               state="complete"
-              iceProfile="glacier"
+              iceProfile={iceProfile}
               size={120}
             />
           </View>
@@ -53,7 +79,7 @@ export function SessionCompleteScreen({ route, navigation }: Props) {
           <View style={styles.actions}>
             <PrimaryButton
               label="Another block"
-              onPress={() => navigation.navigate('ActiveSession', {} as any)}
+              onPress={startAnotherBlock}
             />
             <SecondaryButton
               label="Done for now"

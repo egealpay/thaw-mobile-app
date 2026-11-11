@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import notifee, { AuthorizationStatus } from '@notifee/react-native';
+import { enableReminders } from '../../../notifications/reminders';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IceCube, PrimaryButton, ProgressHeader, ScreenBackground, SecondaryButton } from '../../../components';
 import { Spacing, TextStyles } from '../../../constants';
@@ -18,14 +18,9 @@ export function NotificationsScreen({ navigation }: Props) {
   };
 
   const handleEnable = async () => {
-    try {
-      const settings = await notifee.requestPermission();
-      const granted = settings.authorizationStatus === AuthorizationStatus.AUTHORIZED ||
-        settings.authorizationStatus === AuthorizationStatus.PROVISIONAL;
-      if (granted) {
-        await notifee.createChannel({ id: 'reminders', name: 'Daily Reminders' });
-      }
-    } catch {}
+    // Reminders fire at the study time from onboarding. They're scheduled once the
+    // profile is saved (FirstSession → syncReminders).
+    await enableReminders(build().studyWindow.startTime);
     goNext();
   };
 

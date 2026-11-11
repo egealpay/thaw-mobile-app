@@ -25,7 +25,7 @@ interface RevealRow {
 }
 
 export function FocusProfileRevealScreen({ navigation }: Props) {
-  const { draft, setDerivedBy, build } = useContext(OnboardingContext);
+  const { draft } = useContext(OnboardingContext);
 
   const days = draft.deadline?.date ? daysUntil(draft.deadline.date) : null;
 

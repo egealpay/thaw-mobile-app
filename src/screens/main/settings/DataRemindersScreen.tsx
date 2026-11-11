@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Alert,
+  Linking,
+  Platform,
   SafeAreaView,
   ScrollView,
   Share,
@@ -14,6 +17,7 @@ import { Colors, Spacing, TextStyles } from '../../../constants';
 import { getAllSessions, deleteAllSessions } from '../../../storage/db';
 import { clearAll, getProfile, getSettings, saveSettings } from '../../../storage/mmkv';
 import { formatTime24to12 } from '../../../utils/formatters';
+import { disableReminders, enableReminders, syncReminders } from '../../../notifications/reminders';
 
 function Row({
   label,
@@ -53,41 +57,66 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-export function DataRemindersScreen() {
-  const settings = getSettings();
-  const [notifs, setNotifs] = useState(settings.notificationsEnabled);
-  const [quietHours, setQuietHours] = useState(settings.quietHoursEnabled);
+function timeToDate(hhmm: string): Date {
+  const [h, m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h || 0, m || 0, 0, 0);
+  return d;
+}
 
-  const handleNotifsToggle = (val: boolean) => {
+function dateToTime(d: Date): string {
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+export function DataRemindersScreen() {
+  const initial = getSettings();
+  const [notifs, setNotifs] = useState(initial.notificationsEnabled);
+  const [quietHours, setQuietHours] = useState(initial.quietHoursEnabled);
+  const [reminderTime, setReminderTime] = useState(initial.reminderTime);
+  const [showAndroidPicker, setShowAndroidPicker] = useState(false);
+
+  const handleNotifsToggle = async (val: boolean) => {
     setNotifs(val);
-    saveSettings({ ...settings, notificationsEnabled: val });
+    if (!val) {
+      await disableReminders();
+      return;
+    }
+    const granted = await enableReminders();
+    if (!granted) {
+      setNotifs(false);
+      Alert.alert(
+        'Notifications are off',
+        'Allow notifications for Thaw in Settings to get your daily reminder.',
+        [
+          { text: 'Not now', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => Linking.openSettings() },
+        ],
+      );
+    }
   };
 
   const handleQuietToggle = (val: boolean) => {
     setQuietHours(val);
-    saveSettings({ ...settings, quietHoursEnabled: val });
+    saveSettings({ ...getSettings(), quietHoursEnabled: val });
+    syncReminders();
   };
+
+  const handleTimeChange = (date?: Date) => {
+    setShowAndroidPicker(false);
+    if (!date) return;
+    const t = dateToTime(date);
+    setReminderTime(t);
+    saveSettings({ ...getSettings(), reminderTime: t });
+    syncReminders();
+  };
+
+  const settings = getSettings();
 
   const handleExport = async () => {
     const sessions = getAllSessions();
     const profile = getProfile();
     const json = JSON.stringify({ profile, sessions }, null, 2);
     await Share.share({ message: json, title: 'Thaw data export' });
-  };
-
-  const handleResetProgress = () => {
-    Alert.alert(
-      'Reset progress?',
-      'Your session history and streak will be cleared. Your profile and settings stay intact.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: () => deleteAllSessions(),
-        },
-      ],
-    );
   };
 
   const handleDeleteAll = () => {
@@ -102,6 +131,7 @@ export function DataRemindersScreen() {
           onPress: () => {
             deleteAllSessions();
             clearAll();
+            syncReminders(); // no profile any more → cancels reminders
           },
         },
       ],
@@ -123,10 +153,31 @@ export function DataRemindersScreen() {
               <Toggle value={notifs} onChange={handleNotifsToggle} />
             </View>
             <View style={styles.divider} />
-            <Row
-              label="Reminder time"
-              value={formatTime24to12(settings.reminderTime)}
-            />
+            {Platform.OS === 'ios' ? (
+              <View style={styles.toggleRow}>
+                <Text style={styles.rowLabel}>Reminder time</Text>
+                <DateTimePicker
+                  value={timeToDate(reminderTime)}
+                  mode="time"
+                  display="compact"
+                  themeVariant="light"
+                  onChange={(_, date) => handleTimeChange(date)}
+                />
+              </View>
+            ) : (
+              <Row
+                label="Reminder time"
+                value={formatTime24to12(reminderTime)}
+                onPress={() => setShowAndroidPicker(true)}
+              />
+            )}
+            {showAndroidPicker && (
+              <DateTimePicker
+                value={timeToDate(reminderTime)}
+                mode="time"
+                onChange={(_, date) => handleTimeChange(date)}
+              />
+            )}
             <View style={styles.divider} />
             <View style={styles.toggleRow}>
               <View style={styles.toggleText}>
@@ -147,12 +198,6 @@ export function DataRemindersScreen() {
           </Section>
 
           <Section title="">
-            <Row
-              label="Reset progress"
-              onPress={handleResetProgress}
-              destructive
-            />
-            <View style={styles.divider} />
             <Row
               label="Delete all data"
               onPress={handleDeleteAll}

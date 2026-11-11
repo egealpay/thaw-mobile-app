@@ -29,7 +29,13 @@ export type SessionStackParamList = {
   ActiveSession: { targetSeconds?: number; profile: FocusProfile; endSession?: boolean };
   Paused: { meltProgress: number; iceProfile: 'glacier' | 'frost'; strictness: 'gentle' | 'strict' };
   Refreeze: undefined;
-  SessionComplete: { focusedMinutes: number; streak: number; todayMinutes: number };
+  // Streak and today's total are read from the session DB by the screen itself.
+  SessionComplete: {
+    focusedMinutes: number;
+    profile: FocusProfile;
+    targetSeconds: number;
+    iceProfile: 'glacier' | 'frost';
+  };
 };
 
 export type MainTabParamList = {

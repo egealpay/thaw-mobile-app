@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { FocusProfile, OnboardingPath } from '../types';
 
 export type PartialProfile = Partial<FocusProfile> & { path?: OnboardingPath };

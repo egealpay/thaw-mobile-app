@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { IceCube, PrimaryButton, ScreenBackground, SecondaryButton } from '../../components';
+import { IceCube, PrimaryButton, ScreenBackground } from '../../components';
 import { Colors, Spacing, TextStyles } from '../../constants';
 import type { OnboardingStackParamList } from '../../navigation/types';
 

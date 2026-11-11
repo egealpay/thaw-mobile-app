@@ -95,11 +95,19 @@ export function ActiveSessionScreen({ route, navigation }: Props) {
     if (meltState.state === 'complete') {
       navigation.navigate('SessionComplete', {
         focusedMinutes: Math.round(meltState.elapsedFocused / 60),
-        streak: 0, // will be computed in SessionComplete
-        todayMinutes: 0,
+        profile,
+        targetSeconds: meltState.targetDuration,
+        iceProfile: meltState.iceProfile,
       });
     }
-  }, [meltState.state, meltState.elapsedFocused, navigation]);
+  }, [
+    meltState.state,
+    meltState.elapsedFocused,
+    meltState.targetDuration,
+    meltState.iceProfile,
+    profile,
+    navigation,
+  ]);
 
   const isIdle = meltState.state === 'idle';
 

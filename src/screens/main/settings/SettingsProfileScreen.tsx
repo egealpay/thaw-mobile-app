@@ -16,7 +16,8 @@ import { Colors, Spacing, TextStyles } from '../../../constants';
 import { clearAll, getProfile, saveProfile } from '../../../storage/mmkv';
 import { deleteAllSessions } from '../../../storage/db';
 import { daysUntil } from '../../../utils/formatters';
-import type { RootStackParamList } from '../../../navigation/types';
+import type { RootStackParamList, SettingsStackParamList } from '../../../navigation/types';
+import { syncReminders } from '../../../notifications/reminders';
 
 type RootNav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -112,6 +113,7 @@ function formatStudyDays(n: number): string {
 
 export function SettingsProfileScreen() {
   const navigation = useNavigation<RootNav>();
+  const settingsNav = useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
   const [profile, setProfile] = useState(getProfile());
   const [strictness, setStrictness] = useState(profile?.strictness ?? 'gentle');
 
@@ -128,16 +130,17 @@ export function SettingsProfileScreen() {
 
   const handleResetProgress = () => {
     Alert.alert(
-      'Reset progress?',
-      'Your session history and streak will be cleared. Your profile and settings stay intact.',
+      'Start over?',
+      'Your session history, streak and Focus Profile will be erased, and you\'ll go through onboarding again. This can\'t be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Reset',
+          text: 'Start over',
           style: 'destructive',
           onPress: () => {
             deleteAllSessions();
             clearAll(); // clears profile → AppNavigator detects and shows onboarding
+            syncReminders(); // no profile → cancels scheduled reminders
           },
         },
       ],
@@ -220,6 +223,14 @@ export function SettingsProfileScreen() {
               label="Study days"
               value={studyDaysStr}
               onPress={() => navigation.navigate('SettingsEdit', { screen: 'EditStudyDays' })}
+            />
+          </Section>
+
+          <Section title="MORE">
+            <Row
+              label="Reminders & data"
+              value=""
+              onPress={() => settingsNav.navigate('DataReminders')}
             />
           </Section>
 

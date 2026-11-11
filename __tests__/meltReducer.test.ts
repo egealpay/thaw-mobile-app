@@ -57,6 +57,49 @@ describe('meltReducer', () => {
     expect(s.state).toBe('melting');
   });
 
+  it('screen lock: away time counts as focus in both modes', () => {
+    for (const strictness of ['gentle', 'strict'] as const) {
+      let s = meltReducer(makeState(), { type: 'START', now: NOW });
+      s = meltReducer(s, { type: 'TICK', now: NOW + 60000 });
+      s = meltReducer(s, { type: 'BACKGROUND', now: NOW + 60000 });
+      s = meltReducer(s, { type: 'REFREEZE_START', now: NOW + 70000 });
+      s = meltReducer(s, { type: 'FOREGROUND', now: NOW + 180000, strictness, locked: true });
+      expect(s.state).toBe('melting');
+      expect(s.elapsedFocused).toBeCloseTo(180);
+      expect(s.distractionCount).toBe(0);
+    }
+  });
+
+  it('screen lock past the target completes the session', () => {
+    let s = meltReducer(makeState(), { type: 'START', now: NOW });
+    s = meltReducer(s, { type: 'BACKGROUND', now: NOW + 1000 });
+    s = meltReducer(s, { type: 'FOREGROUND', now: NOW + (TARGET + 60) * 1000, strictness: 'gentle', locked: true });
+    expect(s.state).toBe('complete');
+    expect(s.meltProgress).toBe(1);
+    expect(s.elapsedFocused).toBe(TARGET);
+  });
+
+  it('manual pause stays paused across background/foreground (no credit, no refreeze)', () => {
+    for (const locked of [true, false]) {
+      let s = meltReducer(makeState(), { type: 'START', now: NOW });
+      s = meltReducer(s, { type: 'TICK', now: NOW + 60000 });
+      s = meltReducer(s, { type: 'PAUSE', now: NOW + 60000 });
+      s = meltReducer(s, { type: 'BACKGROUND', now: NOW + 61000 });
+      s = meltReducer(s, { type: 'REFREEZE_START', now: NOW + 71000 });
+      s = meltReducer(s, { type: 'FOREGROUND', now: NOW + 300000, strictness: 'strict', locked });
+      expect(s.state).toBe('paused');
+      expect(s.elapsedFocused).toBeCloseTo(60);
+    }
+  });
+
+  it('FOREGROUND while melting (e.g. after Control Center) changes nothing', () => {
+    let s = meltReducer(makeState(), { type: 'START', now: NOW });
+    s = meltReducer(s, { type: 'TICK', now: NOW + 5000 });
+    const before = s;
+    s = meltReducer(s, { type: 'FOREGROUND', now: NOW + 6000, strictness: 'strict' });
+    expect(s).toBe(before);
+  });
+
   it('FOREGROUND with Gentle: no penalty, no credit, just resumes', () => {
     let s = meltReducer(makeState(), { type: 'START', now: NOW });
     s = meltReducer(s, { type: 'TICK', now: NOW + 60000 });

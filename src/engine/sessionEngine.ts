@@ -28,6 +28,9 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
 
   const gracTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // True between AppState 'background' and the next 'active'
+  const inBackgroundRef = useRef(false);
+  const prevStateNameRef = useRef(meltState.state);
 
   const dispatch = useCallback((event: Parameters<typeof meltReducer>[1]) => {
     setMeltState(prev => {
@@ -37,14 +40,27 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
     });
   }, []);
 
-  // Live Activity: start when melting begins, end on complete/abandon
+  // Live Activity: iOS renders the countdown itself, so only push changes of course
+  // (start, pause, resume, reconcile after returning) — never per tick.
   useEffect(() => {
-    if (meltState.state === 'melting' && meltState.elapsedFocused < 2) {
-      const remaining = Math.max(0, meltState.targetDuration - meltState.elapsedFocused);
-      LiveActivity.start(subject, meltState.targetDuration, remaining, meltState.meltProgress);
-    }
-    if (meltState.state === 'complete' || meltState.state === 'idle') {
+    const prev = prevStateNameRef.current;
+    const cur = meltState.state;
+    prevStateNameRef.current = cur;
+    if (prev === cur) return;
+
+    if (cur === 'complete' || cur === 'idle') {
       LiveActivity.end();
+      return;
+    }
+    // While backgrounded the native module owns the display (lock keeps counting,
+    // app switch freezes it).
+    if (inBackgroundRef.current) return;
+
+    const remaining = Math.max(0, meltState.targetDuration - meltState.elapsedFocused);
+    if (prev === 'idle' && cur === 'melting') {
+      LiveActivity.start(subject, meltState.targetDuration, remaining);
+    } else {
+      LiveActivity.update(remaining, cur !== 'melting');
     }
   }, [meltState.state]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -53,21 +69,10 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
     if (meltState.state === 'melting') {
       tickIntervalRef.current = setInterval(() => {
         dispatch({ type: 'TICK', now: Date.now() });
-        // Update Live Activity on every tick
-        const s = stateRef.current;
-        const remaining = Math.max(0, s.targetDuration - s.elapsedFocused);
-        LiveActivity.update(remaining, s.meltProgress, false);
       }, 1000);
-    } else {
-      if (tickIntervalRef.current) {
-        clearInterval(tickIntervalRef.current);
-        tickIntervalRef.current = null;
-      }
-      // Update paused state
-      if (meltState.state === 'paused' || meltState.state === 'refreezing') {
-        const remaining = Math.max(0, meltState.targetDuration - meltState.elapsedFocused);
-        LiveActivity.update(remaining, meltState.meltProgress, true);
-      }
+    } else if (tickIntervalRef.current) {
+      clearInterval(tickIntervalRef.current);
+      tickIntervalRef.current = null;
     }
     return () => {
       if (tickIntervalRef.current) {
@@ -98,21 +103,30 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
 
   // AppState listener
   useEffect(() => {
-    const sub = AppState.addEventListener('change', (status: AppStateStatus) => {
+    // 'inactive' (Control Center, notification shade, call banner) is ignored: the user
+    // hasn't left. Only a real trip to the background counts.
+    const sub = AppState.addEventListener('change', async (status: AppStateStatus) => {
       const now = Date.now();
-      if (status === 'background' || status === 'inactive') {
+      if (status === 'background') {
+        if (inBackgroundRef.current) return;
+        inBackgroundRef.current = true;
         dispatch({ type: 'BACKGROUND', now });
-        if (strictness === 'strict') {
+        if (strictness === 'strict' && !gracTimerRef.current) {
           gracTimerRef.current = setTimeout(() => {
+            gracTimerRef.current = null;
             dispatch({ type: 'REFREEZE_START', now: Date.now() });
           }, GRACE_SECONDS * 1000);
         }
       } else if (status === 'active') {
+        if (!inBackgroundRef.current) return;
         if (gracTimerRef.current) {
           clearTimeout(gracTimerRef.current);
           gracTimerRef.current = null;
         }
-        dispatch({ type: 'FOREGROUND', now, strictness });
+        // Screen lock isn't a distraction; an app switch is.
+        const locked = await LiveActivity.consumeLastBackgroundWasLock();
+        inBackgroundRef.current = false;
+        dispatch({ type: 'FOREGROUND', now, strictness, locked });
       }
     });
     return () => sub.remove();
@@ -147,8 +161,7 @@ export function useSessionEngine(profile: FocusProfile | null, targetSeconds?: n
       };
       insertSession(record);
     }
-    dispatch({ type: 'ABANDON', now: Date.now() });
-    LiveActivity.end();
+    dispatch({ type: 'ABANDON', now: Date.now() }); // → idle, which ends the Live Activity
   }, [dispatch, strictness]);
 
   const reset = useCallback(

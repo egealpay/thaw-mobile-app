@@ -12,4 +12,6 @@ export interface MeltState {
   distractionCount: number;
   startedAt: number;
   lastTickAt: number;
+  /** Why the session is paused: the user tapped Pause, or the app went to the background. */
+  pauseReason?: 'user' | 'background';
 }

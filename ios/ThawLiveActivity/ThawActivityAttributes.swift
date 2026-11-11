@@ -1,9 +1,13 @@
 import ActivityKit
+import Foundation
 
 struct ThawActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
+        /// When the ice finishes melting if it keeps melting. The system renders the
+        /// countdown from this date, so the lock screen stays live while the app is suspended.
+        var endDate: Date
+        /// Frozen value shown while paused.
         var remainingSeconds: Int
-        var meltProgress: Double  // 0.0 – 1.0
         var isPaused: Bool
         var subject: String
     }

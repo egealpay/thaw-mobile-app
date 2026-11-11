@@ -4,13 +4,14 @@
 
 RCT_EXTERN_METHOD(startActivity:(NSString *)subject
                   targetSeconds:(double)targetSeconds
-                  remainingSeconds:(double)remainingSeconds
-                  meltProgress:(double)meltProgress)
+                  remainingSeconds:(double)remainingSeconds)
 
 RCT_EXTERN_METHOD(updateActivity:(double)remainingSeconds
-                  meltProgress:(double)meltProgress
                   isPaused:(BOOL)isPaused)
 
 RCT_EXTERN_METHOD(endActivity)
+
+RCT_EXTERN_METHOD(consumeLastBackgroundWasLock:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 
 @end

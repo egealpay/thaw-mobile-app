@@ -2,42 +2,84 @@ import WidgetKit
 import SwiftUI
 import ActivityKit
 
-// MARK: - Lock Screen / Notification Center view
+private let iceBlue = Color(red: 0.36, green: 0.73, blue: 0.95)
+
+private func clock(_ seconds: Int) -> String {
+    let s = max(0, seconds)
+    return String(format: "%d:%02d", s / 60, s % 60)
+}
+
+private extension ActivityViewContext where Attributes == ThawActivityAttributes {
+    /// Virtual start so that start...endDate always spans the full session length.
+    var interval: ClosedRange<Date> {
+        let end = state.endDate
+        return end.addingTimeInterval(-Double(max(1, attributes.targetDuration)))...end
+    }
+    var pausedProgress: Double {
+        let total = Double(max(1, attributes.targetDuration))
+        return min(1, max(0, (total - Double(state.remainingSeconds)) / total))
+    }
+}
+
+// MARK: - Shared pieces
+
+private struct TimerText: View {
+    let context: ActivityViewContext<ThawActivityAttributes>
+    var body: some View {
+        if context.state.isPaused {
+            Text(clock(context.state.remainingSeconds))
+        } else {
+            Text(timerInterval: context.interval, countsDown: true)
+        }
+    }
+}
+
+private struct MeltBar: View {
+    let context: ActivityViewContext<ThawActivityAttributes>
+    var body: some View {
+        Group {
+            if context.state.isPaused {
+                ProgressView(value: context.pausedProgress)
+            } else {
+                ProgressView(timerInterval: context.interval, countsDown: false) {
+                    EmptyView()
+                } currentValueLabel: {
+                    EmptyView()
+                }
+            }
+        }
+        .progressViewStyle(.linear)
+        .tint(iceBlue)
+    }
+}
+
+// MARK: - Lock Screen / Notification Center
 
 struct ThawLockScreenView: View {
     let context: ActivityViewContext<ThawActivityAttributes>
 
-    private var timerString: String {
-        let s = context.state.remainingSeconds
-        return String(format: "%d:%02d", s / 60, s % 60)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Header row
             HStack {
                 Image(systemName: "snowflake")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Color(red: 0.36, green: 0.73, blue: 0.95))
+                    .foregroundColor(iceBlue)
                 Text("Thaw")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.white)
                 Spacer()
-                if context.state.isPaused {
-                    Text("PAUSED")
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(.white.opacity(0.55))
-                        .kerning(0.5)
-                }
+                Text(context.state.isPaused ? "PAUSED" : "MELTING")
+                    .font(.system(size: 11, weight: .medium))
+                    .kerning(0.5)
+                    .foregroundColor(.white.opacity(0.55))
             }
 
-            // Timer
-            Text(timerString)
-                .font(.system(size: 52, weight: .thin, design: .monospaced))
-                .foregroundColor(.white)
+            TimerText(context: context)
+                .font(.system(size: 52, weight: .thin))
                 .monospacedDigit()
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Subject
             if !context.state.subject.isEmpty {
                 Text(context.state.subject)
                     .font(.system(size: 13))
@@ -45,63 +87,12 @@ struct ThawLockScreenView: View {
                     .lineLimit(1)
             }
 
-            // Progress bar
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.white.opacity(0.15))
-                        .frame(height: 4)
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color(red: 0.36, green: 0.73, blue: 0.95),
-                                    Color(red: 0.25, green: 0.54, blue: 0.87),
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(
-                            width: max(0, geo.size.width * CGFloat(context.state.meltProgress)),
-                            height: 4
-                        )
-                }
-            }
-            .frame(height: 4)
+            MeltBar(context: context)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(red: 0.055, green: 0.227, blue: 0.388),
-                    Color(red: 0.106, green: 0.318, blue: 0.498),
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-    }
-}
-
-// MARK: - Dynamic Island compact views
-
-private struct CompactLeading: View {
-    var body: some View {
-        Image(systemName: "snowflake")
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundColor(Color(red: 0.36, green: 0.73, blue: 0.95))
-    }
-}
-
-private struct CompactTrailing: View {
-    let remainingSeconds: Int
-    var body: some View {
-        Text(String(format: "%d:%02d", remainingSeconds / 60, remainingSeconds % 60))
-            .font(.system(size: 13, weight: .medium, design: .monospaced))
-            .monospacedDigit()
-            .foregroundColor(.white)
+        .activityBackgroundTint(Color(red: 0.055, green: 0.227, blue: 0.388))
+        .activitySystemActionForegroundColor(.white)
     }
 }
 
@@ -115,32 +106,40 @@ struct ThawLiveActivityWidget: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    CompactLeading()
+                    Image(systemName: "snowflake")
+                        .foregroundColor(iceBlue)
                         .padding(.leading, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    CompactTrailing(remainingSeconds: context.state.remainingSeconds)
+                    TimerText(context: context)
+                        .font(.system(size: 15, weight: .medium))
+                        .monospacedDigit()
+                        .foregroundColor(.white)
+                        .frame(maxWidth: 64, alignment: .trailing)
                         .padding(.trailing, 4)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    HStack {
-                        ProgressView(value: context.state.meltProgress)
-                            .tint(Color(red: 0.36, green: 0.73, blue: 0.95))
-                        Text(context.state.isPaused ? "Paused" : "Melting")
+                    VStack(alignment: .leading, spacing: 6) {
+                        MeltBar(context: context)
+                        Text(context.state.isPaused ? "Paused" : (context.state.subject.isEmpty ? "Melting" : context.state.subject))
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                            .lineLimit(1)
                     }
                     .padding(.horizontal, 8)
-                    .padding(.bottom, 4)
                 }
             } compactLeading: {
-                CompactLeading()
+                Image(systemName: "snowflake")
+                    .foregroundColor(iceBlue)
             } compactTrailing: {
-                CompactTrailing(remainingSeconds: context.state.remainingSeconds)
+                TimerText(context: context)
+                    .font(.system(size: 13, weight: .medium))
+                    .monospacedDigit()
+                    .foregroundColor(.white)
+                    .frame(maxWidth: 46)
             } minimal: {
                 Image(systemName: "snowflake")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color(red: 0.36, green: 0.73, blue: 0.95))
+                    .foregroundColor(iceBlue)
             }
         }
     }

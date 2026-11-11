@@ -11,7 +11,8 @@ export type MeltEvent =
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number }
   | { type: 'BACKGROUND'; now: number }
-  | { type: 'FOREGROUND'; now: number; strictness: Strictness }
+  // locked: the app was backgrounded because the screen was locked (not an app switch)
+  | { type: 'FOREGROUND'; now: number; strictness: Strictness; locked?: boolean }
   | { type: 'REFREEZE_START'; now: number }
   | { type: 'ABANDON'; now: number }
   | { type: 'RESET' };
@@ -45,62 +46,78 @@ export function meltReducer(state: MeltState, event: MeltEvent): MeltState {
 
     case 'PAUSE': {
       if (state.state !== 'melting') return state;
-      return { ...state, state: 'paused', lastTickAt: event.now };
+      return { ...state, state: 'paused', pauseReason: 'user', lastTickAt: event.now };
     }
 
     case 'RESUME': {
       if (state.state !== 'paused') return state;
-      return { ...state, state: 'melting', lastTickAt: event.now };
+      return { ...state, state: 'melting', pauseReason: undefined, lastTickAt: event.now };
     }
 
     case 'BACKGROUND': {
       if (state.state !== 'melting') return state;
-      return { ...state, state: 'paused', lastTickAt: event.now };
+      return { ...state, state: 'paused', pauseReason: 'background', lastTickAt: event.now };
     }
 
     case 'FOREGROUND': {
+      // Only reconcile pauses caused by leaving the app. A manual pause stays paused.
+      const awayPause =
+        (state.state === 'paused' || state.state === 'refreezing') &&
+        state.pauseReason === 'background';
+      if (!awayPause) return state;
+
       const delta = (event.now - state.lastTickAt) / 1000;
 
-      if (state.state === 'paused' || state.state === 'refreezing') {
-        if (event.strictness === 'gentle') {
-          // No penalty, no credit — just resume
-          return { ...state, state: 'melting', lastTickAt: event.now };
-        }
-
-        // Strict: apply grace, then refreeze for remaining
-        const refreezeSeconds = Math.max(0, delta - GRACE_SECONDS);
-        const refreezeLoss = refreezeSeconds * state.meltRate * REFREEZE_RATE_MULTIPLIER;
-        const newProgress = Math.max(0, state.meltProgress - refreezeLoss);
-        const newElapsed = newProgress * state.targetDuration;
-        const newDistractions = refreezeSeconds > 0
-          ? state.distractionCount + 1
-          : state.distractionCount;
-
+      if (event.locked) {
+        // Screen lock is not a distraction: the ice kept melting the whole time.
+        const newElapsed = Math.min(state.elapsedFocused + delta, state.targetDuration);
         return {
           ...state,
-          state: 'melting',
-          meltProgress: newProgress,
+          state: newElapsed >= state.targetDuration ? 'complete' : 'melting',
           elapsedFocused: newElapsed,
-          distractionCount: newDistractions,
+          meltProgress: Math.min(newElapsed / state.targetDuration, 1),
+          pauseReason: undefined,
           lastTickAt: event.now,
         };
       }
 
-      return { ...state, lastTickAt: event.now };
+      if (event.strictness === 'gentle') {
+        // No penalty, no credit — just resume
+        return { ...state, state: 'melting', pauseReason: undefined, lastTickAt: event.now };
+      }
+
+      // Strict: apply grace, then refreeze for remaining
+      const refreezeSeconds = Math.max(0, delta - GRACE_SECONDS);
+      const refreezeLoss = refreezeSeconds * state.meltRate * REFREEZE_RATE_MULTIPLIER;
+      const newProgress = Math.max(0, state.meltProgress - refreezeLoss);
+      const newElapsed = newProgress * state.targetDuration;
+      const newDistractions = refreezeSeconds > 0
+        ? state.distractionCount + 1
+        : state.distractionCount;
+
+      return {
+        ...state,
+        state: 'melting',
+        meltProgress: newProgress,
+        elapsedFocused: newElapsed,
+        distractionCount: newDistractions,
+        pauseReason: undefined,
+        lastTickAt: event.now,
+      };
     }
 
     case 'REFREEZE_START': {
-      if (state.state !== 'paused') return state;
+      if (state.state !== 'paused' || state.pauseReason !== 'background') return state;
       // Preserve lastTickAt from BACKGROUND so FOREGROUND measures the full away time
       return { ...state, state: 'refreezing' };
     }
 
     case 'ABANDON': {
-      return { ...state, state: 'idle', lastTickAt: event.now };
+      return { ...state, state: 'idle', pauseReason: undefined, lastTickAt: event.now };
     }
 
     case 'RESET': {
-      return { ...state, state: 'idle', lastTickAt: Date.now() };
+      return { ...state, state: 'idle', pauseReason: undefined, lastTickAt: Date.now() };
     }
 
     default:

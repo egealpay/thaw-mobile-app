@@ -76,8 +76,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - PurchasesHybridCommon (18.15.1):
-    - RevenueCat (= 5.78.0)
   - RCTDeprecation (0.85.3)
   - RCTRequired (0.85.3)
   - RCTSwiftUI (0.85.3)
@@ -1931,7 +1929,6 @@ PODS:
     - React-utils (= 0.85.3)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.85.3)
-  - RevenueCat (5.78.0)
   - RNBootSplash (7.3.2):
     - hermes-engine
     - RCTRequired
@@ -1980,9 +1977,6 @@ PODS:
     - React-Core
     - RNNotifee/NotifeeCore (= 9.1.8)
   - RNNotifee/NotifeeCore (9.1.8):
-    - React-Core
-  - RNPurchases (10.4.0):
-    - PurchasesHybridCommon (= 18.15.1)
     - React-Core
   - RNReanimated (4.5.0):
     - hermes-engine
@@ -2331,7 +2325,6 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
-  - RNPurchases (from `../node_modules/react-native-purchases`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2341,8 +2334,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - MMKVCore
-    - PurchasesHybridCommon
-    - RevenueCat
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -2508,8 +2499,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNNotifee:
     :path: "../node_modules/@notifee/react-native"
-  RNPurchases:
-    :path: "../node_modules/react-native-purchases"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -2529,7 +2518,6 @@ SPEC CHECKSUMS:
   NitroMmkv: cfcbd8c18465caa558dd5095be16d078b5155905
   NitroModules: 8308314b644c15567ffad50bb10667e8c1d82666
   op-sqlite: 621f5a21125f0fc9643f0fd83a90b77150d7e0e7
-  PurchasesHybridCommon: eed735a411c1aee8c05d62933fa7c4a40ede4009
   RCTDeprecation: a4c521821fab57cbb125b36effe84d897d0dfa12
   RCTRequired: 9f3a7e5645d4bc3f551593de7550bb66ab6e42bc
   RCTSwiftUI: 239ed2eb9e73de5a6f518810630f0c95e01c8702
@@ -2602,11 +2590,9 @@ SPEC CHECKSUMS:
   ReactCodegen: 9af5798e943781fd2318dab7b60f25337388047c
   ReactCommon: 3ec2a55999d296af90c24beb66c8a77dc660d3ef
   ReactNativeDependencies: fb4943e2fde89fd61498754288269413028d275a
-  RevenueCat: f3641992451c1426da8d8d1466cec3bbdb765962
   RNBootSplash: 31b5c6d3ad199d6f6c3b8c6bfe98be74047b8ce5
   RNDateTimePicker: c33c46d089998652b576a58ac08108db8c9af6f1
   RNNotifee: 4a6ee5c7deaf00e005050052d73ee6315dff7ec9
-  RNPurchases: e42a93515b5d8994b2c4954da925470b0f5a92df
   RNReanimated: 786fbca32bbd50c274f25af01253a6f33fb4989e
   RNScreens: 032083414633a4d94cbcf08f8ab5019d72d1ba36
   RNSVG: a37350c7bc37452fd2b209efa0806f1de0f847ae

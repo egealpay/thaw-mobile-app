@@ -6,7 +6,6 @@ export const storage = createMMKV();
 
 const PROFILE_KEY = 'focusProfile';
 const SETTINGS_KEY = 'settings';
-const ENTITLEMENT_KEY = 'entitlementCache';
 
 export function getProfile(): FocusProfile | null {
   const raw = storage.getString(PROFILE_KEY);
@@ -38,20 +37,6 @@ export function getSettings(): SettingsBlob {
 
 export function saveSettings(settings: SettingsBlob): void {
   storage.set(SETTINGS_KEY, JSON.stringify(settings));
-}
-
-export function getEntitlementCache(): { isPro: boolean } {
-  const raw = storage.getString(ENTITLEMENT_KEY);
-  if (!raw) return { isPro: false };
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return { isPro: false };
-  }
-}
-
-export function saveEntitlementCache(cache: { isPro: boolean }): void {
-  storage.set(ENTITLEMENT_KEY, JSON.stringify(cache));
 }
 
 export function clearAll(): void {
